@@ -1,7 +1,7 @@
 services:
   - type: web
-    name: My-Library-aap
+    name: My-Library-app
     env: docker
-    plan: free
     dockerfilePath: Dockerfile
+    plan: free
     region: oregon
