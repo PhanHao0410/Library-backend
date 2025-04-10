@@ -5,7 +5,7 @@ FROM eclipse-temurin:17-jdk
 WORKDIR /app
 
 # Copy jar file
-COPY target/library-0.0.1-SNAPSHOT.jar.jar app.jar
+COPY target/library-0.0.1-SNAPSHOT.jar app.jar
 
 # (Optional) Cài thêm ca-certificates nếu chưa có
 RUN apt-get update && apt-get install -y ca-certificates
