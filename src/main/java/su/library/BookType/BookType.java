@@ -1,11 +1,9 @@
 package su.library.BookType;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,15 +27,22 @@ public class BookType {
 
     private List<Book> books;
 
-    public BookType(String typeName, String typeCode, List<Book> books){
+    private List<PracticeDocuments> practices;
+
+    public BookType(String typeName, String typeCode, List<Book> books, List<PracticeDocuments> practices) {
         super();
         this.typeName = typeName;
         this.typeCode = typeCode;
         this.books = books;
+        this.practices = practices;
     }
-    public List<Book> getBooks(){
-                  return books;
-         }
 
-    
+    public List<Book> getBooks() {
+        return books;
+    }
+
+    public List<PracticeDocuments> getPractices() {
+        return practices;
+    }
+
 }
