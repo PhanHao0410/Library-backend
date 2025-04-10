@@ -29,6 +29,8 @@
 #   MVNW_VERBOSE - true: enable verbose log; debug: trace the mvnw script; others: silence the output
 # ----------------------------------------------------------------------------
 
+export JAVA_HOME=/opt/render/project/.render/java
+export PATH=$JAVA_HOME/bin:$PATH
 set -euf
 [ "${MVNW_VERBOSE-}" != debug ] || set -x
 
