@@ -1,14 +1,13 @@
-# Use a base image with Java and ca-certificates
-FROM eclipse-temurin:17-jdk
-
-# Set working directory
-WORKDIR /app
-
-# Copy jar file
-COPY target/library-0.0.1-SNAPSHOT.jar app.jar
-
-# (Optional) Cài thêm ca-certificates nếu chưa có
-RUN apt-get update && apt-get install -y ca-certificates
-
-# Run the jar
-CMD ["java", "-jar", "app.jar"]
+# ----- Stage 1: Build app -----
+    FROM maven:3.8.5-openjdk-17 AS build
+    WORKDIR /app
+    COPY . .
+    RUN mvn clean package -DskipTests
+    
+    # ----- Stage 2: Run app -----
+    FROM openjdk:17-jdk-slim
+    WORKDIR /app
+    COPY --from=build /app/target/library-0.0.1-SNAPSHOT.jar app.jar
+    EXPOSE 8080
+    ENTRYPOINT ["java", "-jar", "app.jar"]
+    
