@@ -1,13 +1,9 @@
-# ----- Stage 1: Build app -----
-    FROM maven:3.8.5-openjdk-17 AS build
-    WORKDIR /app
-    COPY . .
-    RUN mvn clean package -DskipTests
-    
-    # ----- Stage 2: Run app -----
-    FROM openjdk:17-jdk-slim
-    WORKDIR /app
-    COPY --from=build /app/target/library-0.0.1-SNAPSHOT.jar app.jar
-    EXPOSE 8080
-    ENTRYPOINT ["java", "-jar", "app.jar"]
-    
+FROM openjdk:17-jdk-slim
+
+# Cài chứng chỉ SSL để kết nối MongoDB Atlas
+RUN apt-get update && apt-get install -y ca-certificates
+
+WORKDIR /app
+COPY --from=build /app/target/library-0.0.1-SNAPSHOT.jar app.jar
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "app.jar"]
