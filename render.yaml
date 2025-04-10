@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: spring-boot-app
+    name: My-Library-aap
     env: docker
     plan: free
     dockerfilePath: Dockerfile
