@@ -24,19 +24,11 @@ public class AdminInitializer {
     @Bean
     CommandLineRunner initAdmin(UserRepository userRepository, PasswordEncoder encoder) {
         return args -> {
-<<<<<<< HEAD
             String adminUsername = adminName;
             if (!userRepository.findByUserName(adminUsername).isPresent()) {
                 User admin = new User();
                 admin.setUserName(adminUsername);
                 admin.setUserPassword(encoder.encode(adminPassword));
-=======
-            String adminUsername = ("ADMIN-NAME");
-            if (!userRepository.findByUserName(adminUsername).isPresent()) {
-                User admin = new User();
-                admin.setUserName(adminUsername);
-                admin.setUserPassword(encoder.encode("ADMIN-PASSWORD"));
->>>>>>> 2273f2c (fix error CORS)
                 admin.setRoles(List.of("ROLE_ADMIN"));
                 userRepository.save(admin);
                 System.out.println("Default admin user 'phanhao' created.");
