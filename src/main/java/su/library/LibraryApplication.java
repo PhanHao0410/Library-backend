@@ -6,7 +6,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.GetMapping;
 
-
 @SpringBootApplication
 @RestController
 @ComponentScan
@@ -15,11 +14,5 @@ public class LibraryApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(LibraryApplication.class, args);
 	}
-
-	@GetMapping("/root")
-	public String HelloWord() {
-		return "Hello word! welcome to Hao's Library";
-	}
-	
 
 }

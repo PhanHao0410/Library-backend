@@ -24,6 +24,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
+                .cors()
+                .and()
                 .csrf().disable()
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.GET, "/api/v1/**").permitAll()
@@ -35,10 +37,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
-        // .requestMatchers(HttpMethod.POST, "/api/v1**").hasRole("ADMIN")
-        // .requestMatchers(HttpMethod.PUT, "/api/v1**").hasRole("ADMIN")
-        // .requestMatchers(HttpMethod.DELETE, "/api/v1**").hasRole("ADMIN")
-        // .requestMatchers("/api/auth**").permitAll()
+
     }
 
     @Bean
