@@ -24,7 +24,8 @@ public class BookTypeController {
 
     @GetMapping
     public ResponseEntity<List<BookType>> allBookTypes() {
-        return new ResponseEntity<List<BookType>>(bookTypeService.getAllBookTypes(), HttpStatus.OK);
+        return new ResponseEntity<List<BookType>>(bookTypeService.getAllBookTypes(),
+                HttpStatus.OK);
     }
 
     @PostMapping("/createNewType")
