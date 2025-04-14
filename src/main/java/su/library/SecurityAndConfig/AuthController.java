@@ -34,7 +34,7 @@ public class AuthController {
                     new UsernamePasswordAuthenticationToken(request.getUserName(), request.getUserPassword()));
         } catch (BadCredentialsException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new LibraryExceptionHandler("The account is not authorized as an administrator!!"));
+                    .body(Collections.singletonMap("error", "The account is not authorized as an administrator!!"));
         }
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(request.getUserName());
