@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import su.library.BookType.LibraryExceptionHandler;
+
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -32,7 +34,7 @@ public class AuthController {
                     new UsernamePasswordAuthenticationToken(request.getUserName(), request.getUserPassword()));
         } catch (BadCredentialsException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body("The account is not authorized as an administrator!!");
+                    .body(new LibraryExceptionHandler("The account is not authorized as an administrator!!"));
         }
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(request.getUserName());
