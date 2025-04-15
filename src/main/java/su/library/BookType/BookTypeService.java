@@ -49,8 +49,7 @@ public class BookTypeService {
         Query query = new Query(Criteria.where("typeCode").is(typeCode)
                 .andOperator(
                         new Criteria().orOperator(
-                                Criteria.where("books.bookName").is(updateBook.getBookName()),
-                                Criteria.where("books.bookAuthor").is(updateBook.getBookAuthor()))));
+                                Criteria.where("books.bookName").is(updateBook.getBookName()))));
         boolean exists = mongoTemplate.exists(query, BookType.class);
         if (exists) {
             throw new LibraryExceptionHandler("This Book of Author already exists!");
