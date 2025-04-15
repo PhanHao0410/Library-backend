@@ -30,13 +30,8 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest request) {
-        try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(request.getUserName(), request.getUserPassword()));
-        } catch (BadCredentialsException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(Collections.singletonMap("error", "The account is not authorized as an administrator!!"));
-        }
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.getUserName(), request.getUserPassword()));
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(request.getUserName());
         String token = jwtUtil.generateToken(userDetails.getUsername(),

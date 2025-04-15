@@ -91,9 +91,9 @@ public class BookTypeService {
         Query query = new Query(Criteria.where("typeCode").is(typeCode)
                 .andOperator(
                         new Criteria().orOperator(
-                                Criteria.where("practices.practiceDocumentName")
+                                Criteria.where("practices.practiceName")
                                         .is(createPractice.getPracticeName()),
-                                Criteria.where("practices.practiceDocumentLink")
+                                Criteria.where("practices.practiceName")
                                         .is(createPractice.getPracticeLink()))));
 
         boolean exists = mongoTemplate.exists(query, BookType.class);
