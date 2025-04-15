@@ -47,9 +47,8 @@ public class BookTypeService {
 
     public String UpdateBookInformation(String typeCode, String bookId, Book updateBook) {
         Query query = new Query(Criteria.where("typeCode").is(typeCode)
-                .andOperator(
-                        new Criteria().orOperator(
-                                Criteria.where("books.bookName").is(updateBook.getBookName()))));
+                .and("books").elemMatch(Criteria.where("bookName").is(updateBook.getBookName())
+                        .and("bookAuthor").is(updateBook.getBookAuthor())));
         boolean exists = mongoTemplate.exists(query, BookType.class);
         if (exists) {
             throw new LibraryExceptionHandler("This Book of Author already exists!");
@@ -133,7 +132,8 @@ public class BookTypeService {
         Query updateQuery = new Query(
                 Criteria.where("typeCode").is(typeCode).and("practices.practiceId").is(practiceId));
 
-        Update update = new Update().set("practices.$.practiceName", updatePractice.getPracticeName())
+        Update update = new Update()
+                .set("practices.$.practiceName", updatePractice.getPracticeName())
                 .set("practices.$.practiceLink", updatePractice.getPracticeLink())
                 .set("practices.$.practiceDescribe", updatePractice.getPracticeDescribe());
         mongoTemplate.updateFirst(updateQuery, update, BookType.class);
