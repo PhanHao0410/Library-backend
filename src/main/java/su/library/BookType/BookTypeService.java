@@ -24,6 +24,13 @@ public class BookTypeService {
         return bookTypeRepository.findAll();
     }
 
+    public List<Book> getBooksInTypeCode(String typeCode) {
+        Query findQuery = new Query(Criteria.where("typeCode").is(typeCode));
+
+        BookType bookType = mongoTemplate.findOne(findQuery, BookType.class);
+        return bookType.getBooks();
+    }
+
     public BookType createNewBookType(BookType bookType) {
         return bookTypeRepository.save(bookType);
     }
@@ -46,13 +53,23 @@ public class BookTypeService {
     }
 
     public String UpdateBookInformation(String typeCode, String bookId, Book updateBook) {
-        Query query = new Query(Criteria.where("typeCode").is(typeCode)
-                .and("books").elemMatch(Criteria.where("bookName").is(updateBook.getBookName())
-                        .and("bookAuthor").is(updateBook.getBookAuthor())));
-        boolean exists = mongoTemplate.exists(query, BookType.class);
-        if (exists) {
+        Query findQuery = new Query(Criteria.where("typeCode").is(typeCode)
+                .and("books.bookId").is(bookId));
+        BookType bookType = mongoTemplate.findOne(findQuery, BookType.class);
+
+        if (bookType == null) {
+            throw new LibraryExceptionHandler("BookType or Book not found!");
+        }
+
+        boolean isDuplicate = bookType.getBooks().stream()
+                .filter(book -> !book.getBookId().equals(bookId))
+                .anyMatch(book -> book.getBookName().equals(updateBook.getBookName()) &&
+                        book.getBookAuthor().equals(updateBook.getBookAuthor()));
+
+        if (isDuplicate) {
             throw new LibraryExceptionHandler("This Book of Author already exists!");
         }
+
         Query updateQuery = new Query(Criteria.where("typeCode").is(typeCode)
                 .and("books.bookId").is(bookId));
         Update update = new Update()

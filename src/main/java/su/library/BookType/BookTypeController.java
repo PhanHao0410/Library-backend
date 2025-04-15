@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -37,6 +38,11 @@ public class BookTypeController {
     @GetMapping("/getType/{typeCode}")
     public ResponseEntity<Optional<BookType>> findByTypeCode(@PathVariable String typeCode) {
         return new ResponseEntity<Optional<BookType>>(bookTypeService.getTypeByTypeCode(typeCode), HttpStatus.OK);
+    }
+
+    @GetMapping("/{typeCode}/books")
+    public ResponseEntity<List<Book>> getMethodName(@PathVariable String typeCode) {
+        return new ResponseEntity<List<Book>>(bookTypeService.getBooksInTypeCode(typeCode), HttpStatus.OK);
     }
 
     @DeleteMapping("/deleteType/{typeId}")
