@@ -31,6 +31,13 @@ public class BookTypeService {
         return bookType.getBooks();
     }
 
+    public List<PracticeDocuments> getPracticesInTypeCode(String typeCode) {
+        Query findQuery = new Query(Criteria.where("typeCode").is(typeCode));
+
+        BookType bookType = mongoTemplate.findOne(findQuery, BookType.class);
+        return bookType.getPractices();
+    }
+
     public BookType createNewBookType(BookType bookType) {
         return bookTypeRepository.save(bookType);
     }

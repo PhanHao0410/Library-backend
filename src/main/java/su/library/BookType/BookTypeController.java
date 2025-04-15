@@ -41,8 +41,14 @@ public class BookTypeController {
     }
 
     @GetMapping("/{typeCode}/books")
-    public ResponseEntity<List<Book>> getMethodName(@PathVariable String typeCode) {
+    public ResponseEntity<List<Book>> getAllBooksByTypeCode(@PathVariable String typeCode) {
         return new ResponseEntity<List<Book>>(bookTypeService.getBooksInTypeCode(typeCode), HttpStatus.OK);
+    }
+
+    @GetMapping("/{typeCode}/practices")
+    public ResponseEntity<List<PracticeDocuments>> getAllPracticeByTypeCode(@PathVariable String typeCode) {
+        return new ResponseEntity<List<PracticeDocuments>>(bookTypeService.getPracticesInTypeCode(typeCode),
+                HttpStatus.OK);
     }
 
     @DeleteMapping("/deleteType/{typeId}")
