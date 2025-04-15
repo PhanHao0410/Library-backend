@@ -59,7 +59,10 @@ public class BookTypeService {
                 .set("books.$.bookName", updateBook.getBookName())
                 .set("books.$.bookAuthor", updateBook.getBookAuthor())
                 .set("books.$.bookUseLanguage", updateBook.getBookUseLanguage())
-                .set("books.$.bookDescribe", updateBook.getBookDescribe());
+                .set("books.$.bookDescribe", updateBook.getBookDescribe())
+                .set("books.$.bookType", updateBook.getBookType())
+                .set("books.$.bookSource", updateBook.getBookSource())
+                .set("books.$.bookPoster", updateBook.getBookPoster());
 
         mongoTemplate.updateFirst(updateQuery, update, BookType.class);
         return "Book updated Success!";
