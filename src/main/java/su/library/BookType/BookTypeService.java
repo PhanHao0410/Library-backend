@@ -145,15 +145,18 @@ public class BookTypeService {
     }
 
     public String updatePracticeInformation(String typeCode, String practiceId, PracticeDocuments updatePractice) {
-        Query query = new Query(Criteria.where("typeCode").is(typeCode)
-                .andOperator(new Criteria().orOperator(
-                        Criteria.where("practices.practiceName").is(updatePractice.getPracticeName()),
-                        Criteria.where("practices.practiceLink").is(updatePractice.getPracticeLink()))));
+        Query findQuery = new Query(Criteria.where("typeCode").is(typeCode)
+                .and("practices.practiceId").is(practiceId));
 
-        boolean exists = mongoTemplate.exists(query, BookType.class);
+        BookType bookType = mongoTemplate.findOne(findQuery, BookType.class);
 
-        if (exists) {
-            throw new LibraryExceptionHandler("This Practice document already exists!");
+        boolean isDuplicate = bookType.getPractices().stream()
+                .filter(practice -> !practice.getPracticeId().equals(practiceId))
+                .anyMatch(practice -> practice.getPracticeName().equals(updatePractice.getPracticeName())
+                        || practice.getPracticeLink().equals(updatePractice.getPracticeLink()));
+
+        if (isDuplicate) {
+            throw new LibraryExceptionHandler("This practice already exists!");
         }
 
         Query updateQuery = new Query(
