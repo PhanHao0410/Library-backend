@@ -149,6 +149,9 @@ public class BookTypeService {
                 .and("practices.practiceId").is(practiceId));
 
         BookType bookType = mongoTemplate.findOne(findQuery, BookType.class);
+        if (bookType == null) {
+            throw new LibraryExceptionHandler("BookType or Book not found!");
+        }
 
         boolean isDuplicate = bookType.getPractices().stream()
                 .filter(practice -> !practice.getPracticeId().equals(practiceId))
