@@ -23,16 +23,20 @@ public class BookType {
 
     private String typeName;
 
+    private String typePoster;
+
     private String typeCode;
 
     private List<Book> books;
 
     private List<PracticeDocuments> practices;
 
-    public BookType(String typeName, String typeCode, List<Book> books, List<PracticeDocuments> practices) {
+    public BookType(String typeName, String typePoster, String typeCode, List<Book> books,
+            List<PracticeDocuments> practices) {
         super();
         this.typeName = typeName;
         this.typeCode = typeCode;
+        this.typePoster = typePoster;
         this.books = books;
         this.practices = practices;
     }
