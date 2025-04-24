@@ -24,6 +24,14 @@ public class Book {
 
     private String bookDescribe;
 
+    private String bookStatus;
+
+    private String bookStatusCode;
+
+    private String expectedTime;
+
+    private String spentTime;
+
     public Book(String bookId, Book newBook) {
         super();
         this.bookId = bookId;
@@ -34,6 +42,10 @@ public class Book {
         this.bookSource = newBook.bookSource;
         this.bookDescribe = newBook.bookDescribe;
         this.bookType = newBook.bookType;
+        this.bookStatus = newBook.bookStatus;
+        this.bookStatusCode = newBook.bookStatusCode;
+        this.expectedTime = newBook.expectedTime;
+        this.spentTime = newBook.spentTime;
     }
 
     public String getBookName() {
@@ -90,6 +102,38 @@ public class Book {
 
     public void setBookDescribe(String bookDescribe) {
         this.bookDescribe = bookDescribe;
+    }
+
+    public String getBookStatus() {
+        return bookStatus;
+    }
+
+    public void setBookStatus(String bookStatus) {
+        this.bookStatus = bookStatus;
+    }
+
+    public String getBookStatusCode() {
+        return bookStatusCode;
+    }
+
+    public void setBookStatusCode(String bookStatusCode) {
+        this.bookStatusCode = bookStatusCode;
+    }
+
+    public String getExpectedTime() {
+        return expectedTime;
+    }
+
+    public void setExpectedTime(String expectedTime) {
+        this.expectedTime = expectedTime;
+    }
+
+    public String getSpentTime() {
+        return spentTime;
+    }
+
+    public void setSpentTime(String spentTime) {
+        this.spentTime = spentTime;
     }
 
 }

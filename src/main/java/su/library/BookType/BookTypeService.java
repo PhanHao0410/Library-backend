@@ -11,6 +11,9 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
+import su.library.DTOClasses.BookStatus;
+import su.library.DTOClasses.BookTime;
+
 @Service
 public class BookTypeService {
 
@@ -86,7 +89,11 @@ public class BookTypeService {
                 .set("books.$.bookDescribe", updateBook.getBookDescribe())
                 .set("books.$.bookType", updateBook.getBookType())
                 .set("books.$.bookSource", updateBook.getBookSource())
-                .set("books.$.bookPoster", updateBook.getBookPoster());
+                .set("books.$.bookPoster", updateBook.getBookPoster())
+                .set("books.$.bookStatus", updateBook.getBookStatus())
+                .set("books.$.bookStatusCode", updateBook.getBookStatusCode())
+                .set("books.$.expectedTime", updateBook.getExpectedTime())
+                .set("books.$.spentTime", updateBook.getSpentTime());
 
         mongoTemplate.updateFirst(updateQuery, update, BookType.class);
         return "Book updated Success!";
@@ -172,6 +179,26 @@ public class BookTypeService {
         mongoTemplate.updateFirst(updateQuery, update, BookType.class);
         return "Practice updated success!";
 
+    }
+
+    public String updateStatusBook(String typeCode, String bookId, BookStatus updateStatus) {
+        Query updateQuery = new Query(Criteria.where("typeCode").is(typeCode).and("books.bookId").is(bookId));
+
+        Update update = new Update()
+                .set("books.$.bookStatusCode", updateStatus.getBookStatusCode())
+                .set("books.$.bookStatus", updateStatus.getBookStatus());
+        mongoTemplate.updateFirst(updateQuery, update, BookType.class);
+        return "Status book updated success!";
+    }
+
+    public String updateTimeBook(String typeCode, String bookId, BookTime updateTime) {
+        Query updateQuery = new Query(Criteria.where("typeCode").is(typeCode).and("books.bookId").is(bookId));
+
+        Update update = new Update()
+                .set("books.$.expectedTime", updateTime.getExpectedTime())
+                .set("books.$.spentTime", updateTime.getSpentTime());
+        mongoTemplate.updateFirst(updateQuery, update, BookType.class);
+        return "Time read book updated success!";
     }
 
 }

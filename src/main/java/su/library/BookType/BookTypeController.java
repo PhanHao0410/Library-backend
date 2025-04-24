@@ -8,6 +8,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import su.library.DTOClasses.BookStatus;
+import su.library.DTOClasses.BookTime;
+
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -92,6 +96,22 @@ public class BookTypeController {
     public ResponseEntity<String> updatePractice(@PathVariable String typeCode, @PathVariable String practiceId,
             @RequestBody PracticeDocuments updatePractice) {
         String result = bookTypeService.updatePracticeInformation(typeCode, practiceId, updatePractice);
+
+        return ResponseEntity.ok(result);
+    }
+
+    @PutMapping("/{typeCode}/updateStatus/{bookId}")
+    public ResponseEntity<String> updateStatus(@PathVariable String typeCode, @PathVariable String bookId,
+            @RequestBody BookStatus updateStatus) {
+        String result = bookTypeService.updateStatusBook(typeCode, bookId, updateStatus);
+
+        return ResponseEntity.ok(result);
+    }
+
+    @PutMapping("/{typeCode}/updateTime/{bookId}")
+    public ResponseEntity<String> updateTime(@PathVariable String typeCode, @PathVariable String bookId,
+            @RequestBody BookTime updateTime) {
+        String result = bookTypeService.updateTimeBook(typeCode, bookId, updateTime);
 
         return ResponseEntity.ok(result);
     }
