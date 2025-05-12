@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -47,6 +48,11 @@ public class BookTypeController {
     @GetMapping("/{typeCode}/books")
     public ResponseEntity<List<Book>> getAllBooksByTypeCode(@PathVariable String typeCode) {
         return new ResponseEntity<List<Book>>(bookTypeService.getBooksInTypeCode(typeCode), HttpStatus.OK);
+    }
+
+    @GetMapping("/{typeCode}/getSingleBook/{bookId}")
+    public ResponseEntity<Book> singleBook(@PathVariable String typeCode, @PathVariable String bookId) {
+        return new ResponseEntity<Book>(bookTypeService.getSingleBook(typeCode, bookId), HttpStatus.OK);
     }
 
     @GetMapping("/{typeCode}/practices")
