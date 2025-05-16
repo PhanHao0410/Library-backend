@@ -1,5 +1,6 @@
 package su.library.BookType;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,7 +10,9 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import su.library.DTOClasses.BookDTO;
 import su.library.DTOClasses.BookStatus;
 import su.library.DTOClasses.BookTime;
 
@@ -20,6 +23,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -67,9 +71,15 @@ public class BookTypeController {
     }
 
     @PostMapping("/{typeCode}/createBook")
-    public ResponseEntity<String> createNewBook(@PathVariable String typeCode, @RequestBody Book book) {
-        String result = bookTypeService.addBookToBookType(typeCode, book);
-        return ResponseEntity.ok(result);
+    public ResponseEntity<String> createNewBook(@PathVariable String typeCode,
+            @RequestPart("createBook") BookDTO createBook, @RequestParam("file") MultipartFile file) {
+        try {
+            String result = bookTypeService.addBookToBookType(typeCode, createBook, file);
+            return ResponseEntity.ok(result);
+        } catch (IOException e) {
+            return ResponseEntity.status(500).body("Error storing file: " + e.getMessage());
+        }
+
     }
 
     @DeleteMapping("/{typeCode}/deleteBook/{bookId}")
@@ -80,9 +90,14 @@ public class BookTypeController {
 
     @PutMapping("/{typeCode}/updateBook/{bookId}")
     public ResponseEntity<String> updateBookByBookId(@PathVariable String typeCode, @PathVariable String bookId,
-            @RequestBody Book updateBook) {
-        String result = bookTypeService.UpdateBookInformation(typeCode, bookId, updateBook);
-        return ResponseEntity.ok(result);
+            @RequestPart("updateBook") BookDTO updateBook, @RequestParam("file") MultipartFile file) {
+        try {
+            String result = bookTypeService.UpdateBookInformation(typeCode, bookId, updateBook, file);
+            return ResponseEntity.ok(result);
+        } catch (IOException e) {
+            return ResponseEntity.status(500).body("Error storing file: " + e.getMessage());
+        }
+
     }
 
     @PostMapping("/{typeCode}/createPractice")
@@ -121,4 +136,14 @@ public class BookTypeController {
 
         return ResponseEntity.ok(result);
     }
+
+    @GetMapping("/file/{id}")
+    public ResponseEntity<?> getFile(@PathVariable("id") String id) {
+        try {
+            return bookTypeService.downloadFile(id);
+        } catch (IOException e) {
+            return ResponseEntity.status(500).body("Error retrieving file: " + e.getMessage());
+        }
+    }
+
 }

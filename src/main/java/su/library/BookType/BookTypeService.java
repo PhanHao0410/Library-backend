@@ -1,16 +1,28 @@
 package su.library.BookType;
 
+import java.io.IOException;
+import org.springframework.http.HttpHeaders;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.data.mongodb.gridfs.GridFsResource;
+import org.springframework.data.mongodb.gridfs.GridFsTemplate;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.mongodb.client.gridfs.model.GridFSFile;
+
+import su.library.DTOClasses.BookDTO;
 import su.library.DTOClasses.BookStatus;
 import su.library.DTOClasses.BookTime;
 
@@ -22,6 +34,9 @@ public class BookTypeService {
 
     @Autowired
     private MongoTemplate mongoTemplate;
+
+    @Autowired
+    private GridFsTemplate gridFsTemplate;
 
     public List<BookType> getAllBookTypes() {
         return bookTypeRepository.findAll();
@@ -75,7 +90,8 @@ public class BookTypeService {
         return "Book deleted success!!";
     }
 
-    public String UpdateBookInformation(String typeCode, String bookId, Book updateBook) {
+    public String UpdateBookInformation(String typeCode, String bookId, BookDTO updateBook, MultipartFile file)
+            throws IOException {
         Query findQuery = new Query(Criteria.where("typeCode").is(typeCode)
                 .and("books.bookId").is(bookId));
         BookType bookType = mongoTemplate.findOne(findQuery, BookType.class);
@@ -107,12 +123,18 @@ public class BookTypeService {
                 .set("books.$.bookStatusCode", updateBook.getBookStatusCode())
                 .set("books.$.expectedTime", updateBook.getExpectedTime())
                 .set("books.$.spentTime", updateBook.getSpentTime());
+        if (file != null && !file.isEmpty()) {
+            ObjectId fileId = gridFsTemplate.store(file.getInputStream(), file.getOriginalFilename(),
+                    file.getContentType());
+            update.set("books.$.bookFileId", fileId);
+        }
 
         mongoTemplate.updateFirst(updateQuery, update, BookType.class);
         return "Book updated Success!";
     }
 
-    public String addBookToBookType(String typeCode, Book createBook) {
+    public String addBookToBookType(String typeCode, BookDTO createBook, MultipartFile file) throws IOException {
+
         Query query = new Query(Criteria.where("typeCode").is(typeCode)
                 .andOperator(
                         new Criteria().orOperator(
@@ -123,8 +145,11 @@ public class BookTypeService {
         if (exists) {
             throw new LibraryExceptionHandler("Book already exists");
         }
+        ObjectId fileId = gridFsTemplate.store(file.getInputStream(), file.getOriginalFilename(),
+                file.getContentType());
+
         String hobbyId = UUID.randomUUID().toString();
-        Book newBook = new Book(hobbyId, createBook);
+        Book newBook = new Book(hobbyId, createBook, fileId);
 
         Query createQuery = new Query(Criteria.where("typeCode").is(typeCode));
         Update update = new Update().push("books", newBook);
@@ -215,4 +240,19 @@ public class BookTypeService {
         return "Time read book updated success!";
     }
 
+    public ResponseEntity<?> downloadFile(String fileId) throws IOException {
+        GridFSFile file = gridFsTemplate.findOne(Query.query(Criteria.where("_id").is(fileId)));
+
+        if (file == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        GridFsResource resource = gridFsTemplate.getResource(file);
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(resource.getContentType()))
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "inline; filename=\"" + resource.getFilename() + "\"")
+                .body(new InputStreamResource(resource.getInputStream()));
+    }
 }

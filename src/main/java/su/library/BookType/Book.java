@@ -1,7 +1,10 @@
 package su.library.BookType;
 
+import org.bson.types.ObjectId;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import su.library.DTOClasses.BookDTO;
 
 @Data
 @NoArgsConstructor
@@ -32,108 +35,27 @@ public class Book {
 
     private String spentTime;
 
-    public Book(String bookId, Book newBook) {
+    private ObjectId bookFileId;
+
+    public Book(String bookId, BookDTO newBook, ObjectId bookFileId) {
         super();
         this.bookId = bookId;
-        this.bookAuthor = newBook.bookAuthor;
-        this.bookName = newBook.bookName;
-        this.bookUseLanguage = newBook.bookUseLanguage;
-        this.bookPoster = newBook.bookPoster;
-        this.bookSource = newBook.bookSource;
-        this.bookDescribe = newBook.bookDescribe;
-        this.bookType = newBook.bookType;
-        this.bookStatus = newBook.bookStatus;
-        this.bookStatusCode = newBook.bookStatusCode;
-        this.expectedTime = newBook.expectedTime;
-        this.spentTime = newBook.spentTime;
+        this.bookAuthor = newBook.getBookAuthor();
+        this.bookName = newBook.getBookName();
+        this.bookUseLanguage = newBook.getBookUseLanguage();
+        this.bookPoster = newBook.getBookPoster();
+        this.bookSource = newBook.getBookSource();
+        this.bookDescribe = newBook.getBookDescribe();
+        this.bookType = newBook.getBookType();
+        this.bookStatus = newBook.getBookStatus();
+        this.bookStatusCode = newBook.getBookStatusCode();
+        this.expectedTime = newBook.getExpectedTime();
+        this.spentTime = newBook.getSpentTime();
+        this.bookFileId = bookFileId;
     }
 
-    public String getBookName() {
-        return bookName;
-    }
-
-    public void setBookName(String bookName) {
-        this.bookName = bookName;
-    }
-
-    public String getBookAuthor() {
-        return bookAuthor;
-    }
-
-    public void setBookAuthor(String bookAuthor) {
-        this.bookAuthor = bookAuthor;
-    }
-
-    public String getBookUseLanguage() {
-        return bookUseLanguage;
-    }
-
-    public void setBookUseLanguage(String bookUseLanguage) {
-        this.bookUseLanguage = bookUseLanguage;
-    }
-
-    public String getBookPoster() {
-        return bookPoster;
-    }
-
-    public void setBookPoster(String bookPoster) {
-        this.bookPoster = bookPoster;
-    }
-
-    public String getBookSource() {
-        return bookSource;
-    }
-
-    public void setBookSource(String bookSource) {
-        this.bookSource = bookSource;
-    }
-
-    public String getBookType() {
-        return bookType;
-    }
-
-    public void setBookType(String bookType) {
-        this.bookType = bookType;
-    }
-
-    public String getBookDescribe() {
-        return bookDescribe;
-    }
-
-    public void setBookDescribe(String bookDescribe) {
-        this.bookDescribe = bookDescribe;
-    }
-
-    public String getBookStatus() {
-        return bookStatus;
-    }
-
-    public void setBookStatus(String bookStatus) {
-        this.bookStatus = bookStatus;
-    }
-
-    public String getBookStatusCode() {
-        return bookStatusCode;
-    }
-
-    public void setBookStatusCode(String bookStatusCode) {
-        this.bookStatusCode = bookStatusCode;
-    }
-
-    public String getExpectedTime() {
-        return expectedTime;
-    }
-
-    public void setExpectedTime(String expectedTime) {
-        this.expectedTime = expectedTime;
-    }
-
-    public String getSpentTime() {
-        return spentTime;
-    }
-
-    public void setSpentTime(String spentTime) {
-        this.spentTime = spentTime;
+    public String getBookFileId() {
+        return bookFileId != null ? bookFileId.toHexString() : null;
     }
 
 }
