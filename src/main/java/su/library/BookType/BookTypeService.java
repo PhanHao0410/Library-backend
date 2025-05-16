@@ -188,7 +188,8 @@ public class BookTypeService {
         Update update = new Update()
                 .set("practices.$.practiceName", updatePractice.getPracticeName())
                 .set("practices.$.practiceLink", updatePractice.getPracticeLink())
-                .set("practices.$.practiceDescribe", updatePractice.getPracticeDescribe());
+                .set("practices.$.practiceDescribe", updatePractice.getPracticeDescribe())
+                .set("practices.$.practicePoster", updatePractice.getPracticePoster());
         mongoTemplate.updateFirst(updateQuery, update, BookType.class);
         return "Practice updated success!";
 

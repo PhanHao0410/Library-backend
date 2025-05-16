@@ -18,12 +18,15 @@ public class PracticeDocuments {
 
     private String practiceDescribe;
 
+    private String practicePoster;
+
     public PracticeDocuments(String practiceId, PracticeDocuments newPractice) {
         super();
         this.practiceId = practiceId;
         this.practiceName = newPractice.practiceName;
         this.practiceLink = newPractice.practiceLink;
         this.practiceDescribe = newPractice.practiceDescribe;
+        this.practicePoster = newPractice.practicePoster;
     }
 
     public String getPracticeName() {
@@ -48,6 +51,14 @@ public class PracticeDocuments {
 
     public void setPracticeDescribe(String practiceDescribe) {
         this.practiceDescribe = practiceDescribe;
+    }
+
+    public String getPracticePoster() {
+        return practicePoster;
+    }
+
+    public void setPracticePoster(String practicePoster) {
+        this.practicePoster = practicePoster;
     }
 
 }
