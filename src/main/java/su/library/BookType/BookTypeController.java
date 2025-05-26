@@ -6,7 +6,6 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -72,13 +71,10 @@ public class BookTypeController {
 
     @PostMapping("/{typeCode}/createBook")
     public ResponseEntity<String> createNewBook(@PathVariable String typeCode,
-            @RequestPart("createBook") BookDTO createBook, @RequestParam("file") MultipartFile file) {
-        try {
-            String result = bookTypeService.addBookToBookType(typeCode, createBook, file);
-            return ResponseEntity.ok(result);
-        } catch (IOException e) {
-            return ResponseEntity.status(500).body("Error storing file: " + e.getMessage());
-        }
+            @RequestPart("createBook") BookDTO createBook, @RequestParam("file") MultipartFile file)
+            throws IOException {
+        String result = bookTypeService.addBookToBookType(typeCode, createBook, file);
+        return ResponseEntity.ok(result);
 
     }
 
@@ -90,14 +86,10 @@ public class BookTypeController {
 
     @PutMapping("/{typeCode}/updateBook/{bookId}")
     public ResponseEntity<String> updateBookByBookId(@PathVariable String typeCode, @PathVariable String bookId,
-            @RequestPart("updateBook") BookDTO updateBook, @RequestParam("file") MultipartFile file) {
-        try {
-            String result = bookTypeService.UpdateBookInformation(typeCode, bookId, updateBook, file);
-            return ResponseEntity.ok(result);
-        } catch (IOException e) {
-            return ResponseEntity.status(500).body("Error storing file: " + e.getMessage());
-        }
-
+            @RequestPart("updateBook") BookDTO updateBook, @RequestParam("file") MultipartFile file)
+            throws IOException {
+        String result = bookTypeService.UpdateBookInformation(typeCode, bookId, updateBook, file);
+        return ResponseEntity.ok(result);
     }
 
     @PostMapping("/{typeCode}/createPractice")

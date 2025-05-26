@@ -2,6 +2,8 @@ package su.library.BookType;
 
 import java.io.IOException;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -18,6 +20,7 @@ import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.mongodb.client.gridfs.model.GridFSFile;
@@ -92,6 +95,7 @@ public class BookTypeService {
 
     public String UpdateBookInformation(String typeCode, String bookId, BookDTO updateBook, MultipartFile file)
             throws IOException {
+
         Query findQuery = new Query(Criteria.where("typeCode").is(typeCode)
                 .and("books.bookId").is(bookId));
         BookType bookType = mongoTemplate.findOne(findQuery, BookType.class);
@@ -134,6 +138,12 @@ public class BookTypeService {
     }
 
     public String addBookToBookType(String typeCode, BookDTO createBook, MultipartFile file) throws IOException {
+        if (file != null && !file.isEmpty()) {
+            long maxSize = 30 * 1024 * 1024;
+            if (file.getSize() > maxSize) {
+                throw new LibraryExceptionHandler("File size exceeds the maximum allowed size of 30MB.");
+            }
+        }
 
         Query query = new Query(Criteria.where("typeCode").is(typeCode)
                 .andOperator(

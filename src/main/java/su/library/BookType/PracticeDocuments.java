@@ -29,36 +29,36 @@ public class PracticeDocuments {
         this.practicePoster = newPractice.practicePoster;
     }
 
-    public String getPracticeName() {
-        return practiceName;
-    }
+    // public String getPracticeName() {
+    // return practiceName;
+    // }
 
-    public void setPracticeName(String practiceName) {
-        this.practiceName = practiceName;
-    }
+    // public void setPracticeName(String practiceName) {
+    // this.practiceName = practiceName;
+    // }
 
-    public String getPracticeLink() {
-        return practiceLink;
-    }
+    // public String getPracticeLink() {
+    // return practiceLink;
+    // }
 
-    public void setPracticeLink(String practiceLink) {
-        this.practiceLink = practiceLink;
-    }
+    // public void setPracticeLink(String practiceLink) {
+    // this.practiceLink = practiceLink;
+    // }
 
-    public String getPracticeDescribe() {
-        return practiceDescribe;
-    }
+    // public String getPracticeDescribe() {
+    // return practiceDescribe;
+    // }
 
-    public void setPracticeDescribe(String practiceDescribe) {
-        this.practiceDescribe = practiceDescribe;
-    }
+    // public void setPracticeDescribe(String practiceDescribe) {
+    // this.practiceDescribe = practiceDescribe;
+    // }
 
-    public String getPracticePoster() {
-        return practicePoster;
-    }
+    // public String getPracticePoster() {
+    // return practicePoster;
+    // }
 
-    public void setPracticePoster(String practicePoster) {
-        this.practicePoster = practicePoster;
-    }
+    // public void setPracticePoster(String practicePoster) {
+    // this.practicePoster = practicePoster;
+    // }
 
 }
