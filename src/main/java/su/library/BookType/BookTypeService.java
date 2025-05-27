@@ -20,7 +20,6 @@ import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.mongodb.client.gridfs.model.GridFSFile;
@@ -28,6 +27,10 @@ import com.mongodb.client.gridfs.model.GridFSFile;
 import su.library.DTOClasses.BookDTO;
 import su.library.DTOClasses.BookStatus;
 import su.library.DTOClasses.BookTime;
+import su.library.exception.AlreadyExistsException;
+import su.library.exception.LibraryExceptionHandler;
+import su.library.exception.NoFoundException;
+import su.library.exception.SizeFileUploadException;
 
 @Service
 public class BookTypeService {
@@ -101,7 +104,7 @@ public class BookTypeService {
         BookType bookType = mongoTemplate.findOne(findQuery, BookType.class);
 
         if (bookType == null) {
-            throw new LibraryExceptionHandler("BookType or Book not found!");
+            throw new NoFoundException("BookType or Book not found!");
         }
 
         boolean isDuplicate = bookType.getBooks().stream()
@@ -110,7 +113,14 @@ public class BookTypeService {
                         book.getBookAuthor().equals(updateBook.getBookAuthor()));
 
         if (isDuplicate) {
-            throw new LibraryExceptionHandler("This Book of Author already exists!");
+            throw new AlreadyExistsException("This Book of Author already exists!");
+        }
+
+        if (file != null && !file.isEmpty()) {
+            long maxSize = 35 * 1024 * 1024;
+            if (file.getSize() > maxSize) {
+                throw new SizeFileUploadException("File size exceeds the maximum allowed size of 30MB.");
+            }
         }
 
         Query updateQuery = new Query(Criteria.where("typeCode").is(typeCode)
@@ -138,12 +148,6 @@ public class BookTypeService {
     }
 
     public String addBookToBookType(String typeCode, BookDTO createBook, MultipartFile file) throws IOException {
-        if (file != null && !file.isEmpty()) {
-            long maxSize = 30 * 1024 * 1024;
-            if (file.getSize() > maxSize) {
-                throw new LibraryExceptionHandler("File size exceeds the maximum allowed size of 30MB.");
-            }
-        }
 
         Query query = new Query(Criteria.where("typeCode").is(typeCode)
                 .andOperator(
@@ -153,7 +157,14 @@ public class BookTypeService {
 
         boolean exists = mongoTemplate.exists(query, BookType.class);
         if (exists) {
-            throw new LibraryExceptionHandler("Book already exists");
+            throw new AlreadyExistsException("Book already exists");
+        }
+
+        if (file != null && !file.isEmpty()) {
+            long maxSize = 35 * 1024 * 1024;
+            if (file.getSize() > maxSize) {
+                throw new SizeFileUploadException("File size exceeds the maximum allowed size of 30MB.");
+            }
         }
         ObjectId fileId = gridFsTemplate.store(file.getInputStream(), file.getOriginalFilename(),
                 file.getContentType());
@@ -178,7 +189,7 @@ public class BookTypeService {
 
         boolean exists = mongoTemplate.exists(query, BookType.class);
         if (exists) {
-            throw new LibraryExceptionHandler("Practice document already exists");
+            throw new AlreadyExistsException("Practice document already exists");
         }
         String hobbyId = UUID.randomUUID().toString();
         PracticeDocuments newPractice = new PracticeDocuments(hobbyId, createPractice);
@@ -205,7 +216,7 @@ public class BookTypeService {
 
         BookType bookType = mongoTemplate.findOne(findQuery, BookType.class);
         if (bookType == null) {
-            throw new LibraryExceptionHandler("BookType or Book not found!");
+            throw new NoFoundException("BookType or Book not found!");
         }
 
         boolean isDuplicate = bookType.getPractices().stream()
@@ -214,7 +225,7 @@ public class BookTypeService {
                         || practice.getPracticeLink().equals(updatePractice.getPracticeLink()));
 
         if (isDuplicate) {
-            throw new LibraryExceptionHandler("This practice already exists!");
+            throw new AlreadyExistsException("This practice already exists!");
         }
 
         Query updateQuery = new Query(
