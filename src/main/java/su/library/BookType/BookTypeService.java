@@ -75,8 +75,15 @@ public class BookTypeService {
         return bookType.getPractices();
     }
 
-    public BookType createNewBookType(BookType bookType) {
-        return bookTypeRepository.save(bookType);
+    public String createNewBookType(BookType bookType) {
+        if (bookTypeRepository.findTypeByTypeName(bookType.getTypeName()).isPresent()
+                || bookTypeRepository.findTypeByTypeCode(bookType.getTypeCode()).isPresent()) {
+            throw new AlreadyExistsException("Type book already exists.");
+        }
+        ;
+
+        bookTypeRepository.save(bookType);
+        return "Create new type success";
     }
 
     public Optional<BookType> getRemoveByTypeId(String typeId) {
@@ -116,10 +123,17 @@ public class BookTypeService {
             throw new AlreadyExistsException("This Book of Author already exists!");
         }
 
+        String currentFileId = null;
+        for (Book book : bookType.getBooks()) {
+            if (book.getBookId().equals(bookId)) {
+                currentFileId = book.getBookFileId();
+                break;
+            }
+        }
         if (file != null && !file.isEmpty()) {
             long maxSize = 35 * 1024 * 1024;
             if (file.getSize() > maxSize) {
-                throw new SizeFileUploadException("File size exceeds the maximum allowed size of 30MB.");
+                throw new SizeFileUploadException("File size exceeds the maximum allowed size of 35MB.");
             }
         }
 
@@ -141,6 +155,8 @@ public class BookTypeService {
             ObjectId fileId = gridFsTemplate.store(file.getInputStream(), file.getOriginalFilename(),
                     file.getContentType());
             update.set("books.$.bookFileId", fileId);
+        } else {
+            update.set("books.$.bookFileId", currentFileId);
         }
 
         mongoTemplate.updateFirst(updateQuery, update, BookType.class);
@@ -163,8 +179,10 @@ public class BookTypeService {
         if (file != null && !file.isEmpty()) {
             long maxSize = 35 * 1024 * 1024;
             if (file.getSize() > maxSize) {
-                throw new SizeFileUploadException("File size exceeds the maximum allowed size of 30MB.");
+                throw new SizeFileUploadException("File size exceeds the maximum allowed size of 35MB.");
             }
+        } else {
+            throw new NoFoundException("The PDF book file is empty. Please upload a new file.");
         }
         ObjectId fileId = gridFsTemplate.store(file.getInputStream(), file.getOriginalFilename(),
                 file.getContentType());

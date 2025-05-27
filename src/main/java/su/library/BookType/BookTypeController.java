@@ -38,9 +38,9 @@ public class BookTypeController {
     }
 
     @PostMapping("/createNewType")
-    public ResponseEntity<BookType> createNewType(@RequestBody BookType bookType) {
-
-        return new ResponseEntity<BookType>(bookTypeService.createNewBookType(bookType), HttpStatus.CREATED);
+    public ResponseEntity<String> createNewType(@RequestBody BookType bookType) {
+        String result = bookTypeService.createNewBookType(bookType);
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping("/getType/{typeCode}")

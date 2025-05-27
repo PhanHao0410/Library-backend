@@ -10,4 +10,7 @@ public interface BookTypeRepository extends MongoRepository<BookType, String> {
     Optional<BookType> deleteTypeByTypeId(String typeId);
 
     Optional<BookType> findTypeByTypeCode(String typeCode);
+
+    Optional<BookType> findTypeByTypeName(String typeName);
+
 }
