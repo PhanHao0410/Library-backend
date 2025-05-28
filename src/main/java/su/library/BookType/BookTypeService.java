@@ -152,6 +152,7 @@ public class BookTypeService {
                 .set("books.$.expectedTime", updateBook.getExpectedTime())
                 .set("books.$.spentTime", updateBook.getSpentTime());
         if (file != null && !file.isEmpty()) {
+            gridFsTemplate.delete(new Query(Criteria.where("_id").is(currentFileId)));
             ObjectId fileId = gridFsTemplate.store(file.getInputStream(), file.getOriginalFilename(),
                     file.getContentType());
             update.set("books.$.bookFileId", fileId);
