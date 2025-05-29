@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
@@ -97,9 +98,32 @@ public class BookTypeService {
     public String deleteBookByBookId(String typeCode, String bookId) {
         Query query = new Query(Criteria.where("typeCode").is(typeCode));
 
-        Update update = new Update().pull("books", Query.query(Criteria.where("bookId").is(bookId)));
+        BookType bookType = mongoTemplate.findOne(query, BookType.class);
+
+        if (bookType == null) {
+            throw new NoFoundException("BookType not found!!!");
+        }
+
+        Book bookToDelete = null;
+        for (Book book : bookType.getBooks()) {
+            if (book.getBookId().equals(bookId)) {
+                bookToDelete = book;
+                break;
+            }
+        }
+
+        if (bookToDelete == null) {
+            throw new NoFoundException("Book not found!!!");
+        }
+
+        String fileId = bookToDelete.getBookFileId();
+
+        Update update = new Update().pull("books", new Document("bookId", bookId));
 
         mongoTemplate.updateFirst(query, update, BookType.class);
+
+        gridFsTemplate.delete(new Query(Criteria.where("_id").is(fileId)));
+
         return "Book deleted success!!";
     }
 
@@ -173,9 +197,6 @@ public class BookTypeService {
                                 Criteria.where("books.bookAuthor").is(createBook.getBookAuthor()))));
 
         boolean exists = mongoTemplate.exists(query, BookType.class);
-        if (exists) {
-            throw new AlreadyExistsException("Book already exists");
-        }
 
         if (file != null && !file.isEmpty()) {
             long maxSize = 35 * 1024 * 1024;
@@ -185,6 +206,11 @@ public class BookTypeService {
         } else {
             throw new NoFoundException("The PDF book file is empty. Please upload a new file.");
         }
+
+        if (exists) {
+            throw new AlreadyExistsException("Book already exists");
+        }
+
         ObjectId fileId = gridFsTemplate.store(file.getInputStream(), file.getOriginalFilename(),
                 file.getContentType());
 
